@@ -56,7 +56,7 @@ public class LinkedGrid {
 		// diagnose();
 		// Populating the Grid from a file
 
-		Scanner fileIn = new Scanner(new File("Sudoku.txt"));
+		Scanner fileIn = new Scanner(new File("ReadSudoku.txt"));
 		rowMarker = root;
 		int number;
 		while (rowMarker != null) {
@@ -119,20 +119,56 @@ public class LinkedGrid {
 
 	}
 
+//	public void display() {
+//		Node rowMarker = root;
+//		while (rowMarker != null) {
+//			Node temp = rowMarker;
+//			while (temp != null) {
+//				// System.out.print(temp.getBoxID()+ " ");//.getSolution() + "
+//				// ");
+//				System.out.print(temp.getSolution() + " ");
+//
+//				temp = temp.getRight();
+//			}
+//			System.out.println();
+//			rowMarker = rowMarker.getDown();
+//		}
+//	}
+	
 	public void display() {
-		Node rowMarker = root;
-		while (rowMarker != null) {
-			Node temp = rowMarker;
-			while (temp != null) {
-				// System.out.print(temp.getBoxID()+ " ");//.getSolution() + "
-				// ");
-				System.out.print(temp.getSolution() + " ");
-
-				temp = temp.getRight();
+		int a[][] = new int[9][9];
+		Node rm = root;
+		int x = 0, y = 0;
+		while (rm != null) {
+			Node newNode = rm;
+			while (newNode != null) {
+				a[x][y] = newNode.getSolution();
+				newNode = newNode.getRight();
+				y++;
 			}
-			System.out.println();
-			rowMarker = rowMarker.getDown();
+			y = 0;
+			rm = rm.getDown();
+			x++;
 		}
+		
+		for (int i = 0; i < 9; i++) {
+			System.out.print("  ");
+			for (int j = 0; j < 9; j++) {
+				System.out.print(a[i][j]);
+				if ((j + 1) % 3 == 0 && j != 8) {
+					System.out.print("  |  ");
+				} else {
+					System.out.print("   ");
+				}
+			}
+			if ((i + 1) % 3 == 0 && i != 8)
+				System.out.print((char) 10 + "  -----------+-------------+------------\n");
+			else if (i != 8)
+				System.out.print((char) 10 + "             |             |            \n");
+			else
+				System.out.print("\n\n");
+		}
+		System.out.println();
 	}
 
 	public void diagnose() {
