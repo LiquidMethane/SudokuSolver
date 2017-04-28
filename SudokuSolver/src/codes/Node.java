@@ -41,6 +41,17 @@ public class Node {
 	public void setPossibilityFalse(int number) {
 		possible[number] = false;
 	}
+	
+	public boolean getPossibility(int number) {
+		return possible[number];
+	}
+	
+	public int checkPossibility() {
+		for (int x = 1; x < 10; x++)
+			if(possible[x])
+				return x;
+		return -1;
+	}
 
 	public int getSolution() {
 		return solution;

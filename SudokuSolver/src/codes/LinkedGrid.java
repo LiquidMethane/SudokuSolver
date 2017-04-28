@@ -198,5 +198,25 @@ public class LinkedGrid {
 		} while (choice != 0);
 
 	}
+	
+	public void uniqueSol() {// not working yet haven't figure out the problem.
+		int count = 0;
+		Node rm = root;
+		Node newNode;
+		while (rm != null) {
+			newNode = rm;
+			while (newNode != null) {
+				count = 0;
+				for (int x = 1; x < 10; x++)
+					if(newNode.getPossibility(x))
+						count++;
+				if (count == 1) {
+					solve(newNode, newNode.checkPossibility());
+				}
+			}
+		}
+	}
+	
+	
 
 }
