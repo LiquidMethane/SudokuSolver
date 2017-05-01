@@ -119,22 +119,22 @@ public class LinkedGrid {
 
 	}
 
-//	public void display() {
-//		Node rowMarker = root;
-//		while (rowMarker != null) {
-//			Node temp = rowMarker;
-//			while (temp != null) {
-//				// System.out.print(temp.getBoxID()+ " ");//.getSolution() + "
-//				// ");
-//				System.out.print(temp.getSolution() + " ");
-//
-//				temp = temp.getRight();
-//			}
-//			System.out.println();
-//			rowMarker = rowMarker.getDown();
-//		}
-//	}
-	
+	// public void display() {
+	// Node rowMarker = root;
+	// while (rowMarker != null) {
+	// Node temp = rowMarker;
+	// while (temp != null) {
+	// // System.out.print(temp.getBoxID()+ " ");//.getSolution() + "
+	// // ");
+	// System.out.print(temp.getSolution() + " ");
+	//
+	// temp = temp.getRight();
+	// }
+	// System.out.println();
+	// rowMarker = rowMarker.getDown();
+	// }
+	// }
+
 	public void display() {
 		int a[][] = new int[9][9];
 		Node rm = root;
@@ -150,7 +150,7 @@ public class LinkedGrid {
 			rm = rm.getDown();
 			x++;
 		}
-		
+
 		for (int i = 0; i < 9; i++) {
 			System.out.print("  ");
 			for (int j = 0; j < 9; j++) {
@@ -198,8 +198,12 @@ public class LinkedGrid {
 		} while (choice != 0);
 
 	}
-	
-	public void uniqueSol() {// not working yet haven't figure out the problem.
+
+	public void backup() {
+
+	}
+
+	public boolean hasUniSol() {// not working
 		int count = 0;
 		Node rm = root;
 		Node newNode;
@@ -208,15 +212,41 @@ public class LinkedGrid {
 			while (newNode != null) {
 				count = 0;
 				for (int x = 1; x < 10; x++)
-					if(newNode.getPossibility(x))
+					if (newNode.getPossibility(x))
 						count++;
+				
 				if (count == 1) {
-					solve(newNode, newNode.checkPossibility());
+					return true;
+
 				}
+				newNode = newNode.getRight();
 			}
+			rm = rm.getDown();
+		}
+		return false;
+	}
+
+	public void uniqueSol() {
+		int count = 0;
+		Node rm = root;
+		Node newNode;
+		while (rm != null) {
+			newNode = rm;
+			while (newNode != null) {
+				count = 0;
+				for (int x = 1; x < 10; x++)
+					if (newNode.getPossibility(x)) {
+						count++;
+						if (count > 1)
+							break;
+					}
+
+				if (count == 1)
+					solve(newNode, newNode.checkPossibility());
+				newNode = newNode.getRight();
+			}
+			rm = rm.getDown();
 		}
 	}
-	
-	
 
 }

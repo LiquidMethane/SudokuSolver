@@ -9,8 +9,8 @@ public class SudokuSolver {
 		LinkedGrid lg = new LinkedGrid(9);
 		
 		lg.display();
-		lg.uniqueSol();
-		lg.display();
+		while (lg.hasUniSol()) 
+			lg.uniqueSol();
 	}
 
 }
