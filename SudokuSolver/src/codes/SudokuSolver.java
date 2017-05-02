@@ -17,6 +17,8 @@ public class SudokuSolver {
 				lg.uniSol();
 			
 			lg.storeLinkedGrid();
+			
+			
 //			lg.solve(lg.firstEmpty(), );
 			
 			

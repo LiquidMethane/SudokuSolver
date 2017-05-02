@@ -8,8 +8,8 @@ public class LinkedGrid {
 
 	private Node root;
 	private int dimension;
-//	private int grid[][] = new int[9][9];
-	
+	// private int grid[][] = new int[9][9];
+
 	LinkedList ll = new LinkedList();
 
 	public LinkedGrid(int size) throws IOException {
@@ -219,7 +219,7 @@ public class LinkedGrid {
 		}
 		return grid;
 	}
-	
+
 	public void restoreLinkedGrid() {
 		int grid[][] = ll.last.getGrid();
 		ll.pop();
@@ -237,11 +237,11 @@ public class LinkedGrid {
 			x++;
 		}
 	}
-	
+
 	public void storeLinkedGrid() {
 		ll.push(toIntArray());
 	}
-	
+
 	public boolean isComplete() {
 		Node rm = root;
 		Node newNode;
@@ -256,16 +256,25 @@ public class LinkedGrid {
 		}
 		return false;
 	}
-	
-	public boolean isPossible(Node newNode) {
-		if (newNode.getSolution() == 0)
-			for (int x = 1; x < 10; x++) {
-				if (newNode.getPossibility(x))
-					return true;
+
+	public boolean isPossible() {
+		Node rm = root;
+		Node newNode;
+		while (rm != null) {
+			newNode = rm;
+			while (newNode != null) {
+				if (newNode.getSolution() == 0)
+					for (int x = 1; x < 10; x++) {
+						if (newNode.getPossibility(x))
+							return true;
+					}
+				newNode = newNode.getRight();
 			}
+			rm = rm.getDown();
+		}
 		return false;
 	}
-	
+
 	public Node firstEmpty() {
 		Node rm = root;
 		Node newNode;
@@ -280,11 +289,7 @@ public class LinkedGrid {
 		}
 		return root;
 	}
-	
-	
-	
-	
-	
+
 	public boolean hasUniSol() {
 		int count = 0;
 		Node rm = root;
@@ -334,10 +339,5 @@ public class LinkedGrid {
 			rm = rm.getDown();
 		}
 	}
-	
-	
-	
-	
-	
 
 }
