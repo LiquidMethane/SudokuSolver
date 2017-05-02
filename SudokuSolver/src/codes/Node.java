@@ -7,6 +7,7 @@ public class Node {
 	private int boxID;
 	private int rowID;
 	private int columnID;
+	private boolean checkmark;
 	private Node up;
 	private Node down;
 	private Node left;
@@ -32,6 +33,14 @@ public class Node {
 		System.out.println();
 	}
 	
+	public boolean isCheckmark() {
+		return checkmark;
+	}
+
+	public void setCheckmark(boolean checkmark) {
+		this.checkmark = checkmark;
+	}
+
 	public int getRowID() {
 		return rowID;
 	}

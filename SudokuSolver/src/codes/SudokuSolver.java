@@ -31,12 +31,14 @@ public class SudokuSolver {
 		
 		for (int x = 0; x < 20; x++) {
 			
-//			lg.uniSol();
+			lg.uniSol();
 			for (int i = 1; i < 10; i++)
-				lg.recessSol(i);
+				lg.elimination(i);
+			for (int i = 1; i < 10; i++)
+				lg.recessUniSol(i);
 			
 		}
-		lg.recessSol(6);
+//		lg.recessSol(6);
 		lg.display();
 		
 //		lg.uniSol();

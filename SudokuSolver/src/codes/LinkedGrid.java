@@ -61,7 +61,7 @@ public class LinkedGrid {
 		// display();
 		// diagnose();
 		// Populating the Grid from a file
-		
+
 		box[1] = root;
 		box[2] = box[1].getRight().getRight().getRight();
 		box[3] = box[2].getRight().getRight().getRight();
@@ -303,7 +303,7 @@ public class LinkedGrid {
 		return root;
 	}
 
-	public boolean hasUniSol() {
+	public boolean hasUniSol() {// kinda useless
 		int count = 0;
 		Node rm = root;
 		Node newNode;
@@ -350,70 +350,190 @@ public class LinkedGrid {
 			rm = rm.getDown();
 		}
 	}
-	
-	public void recessSol(int i) {
+
+	public void recessUniSol(int i) {
 		Node rm;
 		Node newNode;
 		Node temp = null;
 		int count = 0;
-		
-//		rm = root;
-//		while (rm != null) {
-//			count = 0;
-//			newNode = rm;
-//			while (newNode != null) {
-//				if (newNode.getPossibility(i)) {
-//					count++;
-//				temp = newNode;
-//				}
-//				if (count > 1)
-//					break;
-//				newNode = newNode.getRight();
-//			}
-//			if (count == 1)
-//				solve(temp, i);
-//			rm = rm.getDown();
-//		}
-//		
-//		Node cm = root;
-//		while (cm != null) {
-//			count = 0;
-//			newNode = cm;
-//			while (newNode != null) {
-//				if (newNode.getPossibility(i)) {
-//					count++;
-//					temp = newNode;
-//				}
-//				if (count > 1)
-//					break;
-//				newNode = newNode.getDown();
-//			}
-//			if (count == 1)
-//				solve(temp, i);
-//			cm = cm.getRight();
-//		}
-		
+
+		rm = root;
+		while (rm != null) {
+			count = 0;
+			newNode = rm;
+			while (newNode != null) {
+				if (newNode.getPossibility(i)) {
+					count++;
+					temp = newNode;
+				}
+				if (count > 1)
+					break;
+				newNode = newNode.getRight();
+			}
+			if (count == 1)
+				solve(temp, i);
+			rm = rm.getDown();
+		}
+
+		Node cm = root;
+		while (cm != null) {
+			count = 0;
+			newNode = cm;
+			while (newNode != null) {
+				if (newNode.getPossibility(i)) {
+					count++;
+					temp = newNode;
+				}
+				if (count > 1)
+					break;
+				newNode = newNode.getDown();
+			}
+			if (count == 1)
+				solve(temp, i);
+			cm = cm.getRight();
+		}
+
 		for (int x = 1; x < 10; x++) {
-			rm = root;
-			while (rm != null) {
-				newNode = rm;
-				while (newNode != null) {
-					if (newNode.getBoxID() == x) {
-						if (newNode.getPossibility(i)) {
-							count++;
-							temp = newNode;
-						}
-						if (count > 1)
-							break;
-						newNode = newNode.getRight();
+			Node bm = box[x];
+			for (int a = 0; a < 3; a++) {
+				newNode = bm;
+				for (int b = 0; b < 3; b++) {
+					if (newNode.getPossibility(i)) {
+						count++;
+						temp = newNode;
 					}
+					if (count > 1)
+						break;
+					newNode = newNode.getRight();
 				}
 				if (count == 1)
 					solve(temp, i);
-				rm = rm.getDown();
+				bm = bm.getDown();
 			}
 		}
-		
+	}
+
+	public boolean checkBoxHoriz(int boxID, int i) {
+		Node bm = box[boxID];
+		Node newNode;
+		for (int x = 0; x < 3; x++) {
+			newNode = bm;
+			for (int y = 0; y < 3; y++) {
+				if (!newNode.isCheckmark())
+					if (newNode.getPossibility(i))
+						return false;
+				newNode = newNode.getRight();
+			}
+			bm = bm.getDown();
+		}
+		return true;
+	}
+
+	public boolean checkBoxVert(int boxID, int i) {
+		Node bm = box[boxID];
+		Node newNode;
+		for (int x = 0; x < 3; x++) {
+			newNode = bm;
+			for (int y = 0; y < 3; y++) {
+				if (!newNode.isCheckmark())
+					if (newNode.getPossibility(i))
+						return false;
+				newNode = newNode.getDown();
+			}
+			bm = bm.getRight();
+		}
+		return true;
+	}
+
+	public void setFalseHoriz(Node newNode, int i) {
+		Node temp = newNode.getLeft();
+		while (temp != null) {
+			if (!temp.isCheckmark())
+				temp.setPossibilityFalse(i);
+			temp = temp.getLeft();
+		}
+
+		temp = newNode.getRight();
+		while (temp != null) {
+			if (!temp.isCheckmark())
+				temp.setPossibilityFalse(i);
+			temp = temp.getRight();
+		}
+	}
+
+	public void setFalseVert(Node newNode, int i) {
+		Node temp = newNode.getUp();
+		while (temp != null) {
+			if (!temp.isCheckmark())
+				temp.setPossibilityFalse(i);
+			temp = temp.getUp();
+		}
+
+		temp = newNode.getDown();
+		while (temp != null) {
+			if (!temp.isCheckmark())
+				temp.setPossibilityFalse(i);
+			temp = temp.getDown();
+		}
+	}
+
+	public void setCheckMarkFalse() {
+		Node rm = root;
+		Node newNode;
+		while (rm != null) {
+			newNode = rm;
+			while (newNode != null) {
+				newNode.setCheckmark(false);
+				newNode = newNode.getRight();
+			}
+			rm = rm.getDown();
+		}
+	}
+
+	public void elimination(int i) {
+		int count = 0;
+		for (int x = 1; x < 10; x++) {
+			Node bm = box[x];
+			Node newNode;
+			count = 0;
+			for (int a = 0; a < 3; a++) {
+				newNode = bm;
+				for (int b = 0; b < 3; b++) {
+					if (newNode.getPossibility(i)) {
+						count++;
+						newNode.setCheckmark(true);
+					}
+					newNode = newNode.getRight();
+				}
+				if (count == 2 || count == 3) {
+					if (checkBoxHoriz(x, i)) {
+						setFalseHoriz(newNode, i);
+					}
+				}
+				bm = bm.getDown();
+			}
+			setCheckMarkFalse();
+
+			bm = box[x];
+			for (int c = 0; c < 3; c++) {
+				newNode = bm;
+				count = 0;
+				for (int d = 0; d < 3; d++) {
+					if (newNode.getPossibility(i)) {
+						count++;
+						newNode.setCheckmark(true);
+					}
+					newNode = newNode.getDown();
+				}
+				if (count == 2 || count == 3) {
+					if (checkBoxVert(x, i)) {
+						setFalseVert(newNode, i);
+					}
+				}
+				bm = bm.getRight();
+			}
+			setCheckMarkFalse();
+		}
 	}
 
 }
