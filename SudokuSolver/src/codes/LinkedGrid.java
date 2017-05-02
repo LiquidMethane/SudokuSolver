@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class LinkedGrid {
 
 	private Node root;
+	private Node box[] = new Node[10];
 	private int dimension;
 	// private int grid[][] = new int[9][9];
 
@@ -25,11 +26,11 @@ public class LinkedGrid {
 			temp.setLeft(marker);
 			marker = temp;
 		}
-		Node rowMarker = root;
+		Node rm = root;
 		for (int y = 0; y < dimension - 1; y++) {
 			Node temp = new Node(0);
-			rowMarker.setDown(temp);
-			temp.setUp(rowMarker);
+			rm.setDown(temp);
+			temp.setUp(rm);
 			for (int x = 0; x < dimension - 1; x++) {
 				marker = temp;
 				temp = new Node(0);
@@ -38,43 +39,55 @@ public class LinkedGrid {
 				temp.getLeft().getUp().getRight().setDown(temp);
 				temp.setUp(temp.getLeft().getUp().getRight());
 			}
-			rowMarker = rowMarker.getDown();
+			rm = rm.getDown();
 		}
 
 		// At this point the whole grid is created
 		// We will go through and set BoxID's
 
-		Node temp = root;
-		rowMarker = root;
+		Node newNode = root;
+		rm = root;
 
 		for (int y = 0; y < 9; y++) {
 			for (int x = 0; x < 9; x++) {
-				temp.setBoxID(x / 3 + 1 + (y / 3 * 3));
-				temp = temp.getRight();
+				newNode.setBoxID(x / 3 + 1 + (y / 3 * 3));
+				newNode.setRowID(y);
+				newNode.setColumnID(x);
+				newNode = newNode.getRight();
 			}
-			rowMarker = rowMarker.getDown();
-			temp = rowMarker;
+			rm = rm.getDown();
+			newNode = rm;
 		}
 		// display();
 		// diagnose();
 		// Populating the Grid from a file
+		
+		box[1] = root;
+		box[2] = box[1].getRight().getRight().getRight();
+		box[3] = box[2].getRight().getRight().getRight();
+		box[4] = box[1].getDown().getDown().getDown();
+		box[5] = box[2].getDown().getDown().getDown();
+		box[6] = box[3].getDown().getDown().getDown();
+		box[7] = box[4].getDown().getDown().getDown();
+		box[8] = box[5].getDown().getDown().getDown();
+		box[9] = box[6].getDown().getDown().getDown();
 
 		Scanner fileIn = new Scanner(new File("ReadSudoku.txt"));
-		rowMarker = root;
+		rm = root;
 		int number;
-		while (rowMarker != null) {
-			temp = rowMarker;
-			while (temp != null) {
+		while (rm != null) {
+			newNode = rm;
+			while (newNode != null) {
 
 				number = fileIn.nextInt();
 				if (number != 0)
-					solve(temp, number);
-				temp = temp.getRight();
+					solve(newNode, number);
+				newNode = newNode.getRight();
 				// display();
 				// diagnose();
 			}
 
-			rowMarker = rowMarker.getDown();
+			rm = rm.getDown();
 		}
 		fileIn.close();
 	}
@@ -303,10 +316,8 @@ public class LinkedGrid {
 						if (newNode.getPossibility(x))
 							count++;
 
-					if (count == 1) {
+					if (count == 1)
 						return true;
-
-					}
 				}
 				newNode = newNode.getRight();
 			}
@@ -338,6 +349,71 @@ public class LinkedGrid {
 			}
 			rm = rm.getDown();
 		}
+	}
+	
+	public void recessSol(int i) {
+		Node rm;
+		Node newNode;
+		Node temp = null;
+		int count = 0;
+		
+//		rm = root;
+//		while (rm != null) {
+//			count = 0;
+//			newNode = rm;
+//			while (newNode != null) {
+//				if (newNode.getPossibility(i)) {
+//					count++;
+//				temp = newNode;
+//				}
+//				if (count > 1)
+//					break;
+//				newNode = newNode.getRight();
+//			}
+//			if (count == 1)
+//				solve(temp, i);
+//			rm = rm.getDown();
+//		}
+//		
+//		Node cm = root;
+//		while (cm != null) {
+//			count = 0;
+//			newNode = cm;
+//			while (newNode != null) {
+//				if (newNode.getPossibility(i)) {
+//					count++;
+//					temp = newNode;
+//				}
+//				if (count > 1)
+//					break;
+//				newNode = newNode.getDown();
+//			}
+//			if (count == 1)
+//				solve(temp, i);
+//			cm = cm.getRight();
+//		}
+		
+		for (int x = 1; x < 10; x++) {
+			rm = root;
+			while (rm != null) {
+				newNode = rm;
+				while (newNode != null) {
+					if (newNode.getBoxID() == x) {
+						if (newNode.getPossibility(i)) {
+							count++;
+							temp = newNode;
+						}
+						if (count > 1)
+							break;
+						newNode = newNode.getRight();
+					}
+				}
+				if (count == 1)
+					solve(temp, i);
+				rm = rm.getDown();
+			}
+		}
+		
 	}
 
 }

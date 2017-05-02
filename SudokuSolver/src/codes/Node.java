@@ -5,6 +5,8 @@ public class Node {
 	private int solution;
 	private boolean[] possible = new boolean[10];
 	private int boxID;
+	private int rowID;
+	private int columnID;
 	private Node up;
 	private Node down;
 	private Node left;
@@ -28,6 +30,22 @@ public class Node {
 		for (int x = 1; x < 10; x++)
 			System.out.println(x + ":" + possible[x]);
 		System.out.println();
+	}
+	
+	public int getRowID() {
+		return rowID;
+	}
+
+	public void setRowID(int rowID) {
+		this.rowID = rowID;
+	}
+
+	public int getColumnID() {
+		return columnID;
+	}
+
+	public void setColumnID(int columnID) {
+		this.columnID = columnID;
 	}
 
 	public int getBoxID() {

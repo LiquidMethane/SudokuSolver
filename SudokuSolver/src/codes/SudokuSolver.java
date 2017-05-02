@@ -11,21 +11,33 @@ public class SudokuSolver {
 		
 //		System.out.println(lg.firstEmpty().getSolution());
 		
-		while (!lg.isComplete()) {
+//		while (!lg.isComplete()) {
+//			
+//			while (lg.hasUniSol())
+//				lg.uniSol();
+//			
+//			lg.storeLinkedGrid();
+//			
+//			
+////			lg.solve(lg.firstEmpty(), );
+//			
+//			
+//			
+//			
+//			
+//		}
+		
+		
+		
+		for (int x = 0; x < 20; x++) {
 			
-			while (lg.hasUniSol())
-				lg.uniSol();
-			
-			lg.storeLinkedGrid();
-			
-			
-//			lg.solve(lg.firstEmpty(), );
-			
-			
-			
+//			lg.uniSol();
+			for (int i = 1; i < 10; i++)
+				lg.recessSol(i);
 			
 		}
-		
+		lg.recessSol(6);
+		lg.display();
 		
 //		lg.uniSol();
 //		lg.display();
