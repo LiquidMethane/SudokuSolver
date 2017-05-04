@@ -26,10 +26,13 @@ public class Node {
 
 	public void displayEverything() {
 		System.out.println("Solution:" + solution);
+		System.out.println("Row: " + rowID + " Column: " + columnID);
 		System.out.println("BoxID:" + boxID);
 		System.out.println("Possibilities:");
-		for (int x = 1; x < 10; x++)
-			System.out.println(x + ":" + possible[x]);
+		for (int x = 1; x < 10; x++) 
+			if (possible[x])
+				System.out.print(x + " ");
+//			System.out.println(x + ":" + possible[x]);
 		System.out.println();
 	}
 	
@@ -67,6 +70,10 @@ public class Node {
 
 	public void setPossibilityFalse(int number) {
 		possible[number] = false;
+	}
+	
+	public void setPossibilityTrue(int number) {
+		possible[number] = true;
 	}
 	
 	public boolean getPossibility(int number) {

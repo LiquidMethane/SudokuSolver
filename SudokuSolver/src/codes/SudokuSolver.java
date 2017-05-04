@@ -9,57 +9,39 @@ public class SudokuSolver {
 		
 		LinkedGrid lg = new LinkedGrid(9);
 		
-//		System.out.println(lg.firstEmpty().getSolution());
 		
-//		while (!lg.isComplete()) {
-//			
-//			while (lg.hasUniSol())
-//				lg.uniSol();
-//			
-//			lg.storeLinkedGrid();
-//			
-//			
-////			lg.solve(lg.firstEmpty(), );
-//			
-//			
-//			
-//			
-//			
+//		guess(){
+//			run logical routines
+//			for (guess = 1; guess < 10; guess++){
+//				if(possibilities.contains(guess)){
+//					stack.push(grid);
+//					if(!grid.guess(guess)){
+//						grid = stack.getLast();
+//					}
+//				}
+//			}
 //		}
 		
-		
+
 		
 		for (int x = 0; x < 20; x++) {
 			
-			lg.uniSol();
+//			lg.uniSol();
+			
 			for (int i = 1; i < 10; i++)
-				lg.elimination(i);
+				lg.uniSol();
 			for (int i = 1; i < 10; i++)
 				lg.recessUniSol(i);
+			for (int i = 1; i < 10; i++)
+				lg.elimination(i);
+//			lg.diagnose();
 			
 		}
-//		lg.recessSol(6);
-		lg.display();
+//		lg.elimination();
 		
-//		lg.uniSol();
-//		lg.display();
-//		System.out.println("backup1");
-//		lg.backup();
-//		lg.uniSol();
-//		System.out.println("backup2");
-//		lg.backup();
-//		lg.uniSol();
-//		System.out.println("backup3");
-//		lg.backup();
-//		System.out.println("restore3");
-//		lg.restoreLinkedGrid();
-//		lg.display();
-//		System.out.println("restore2");
-//		lg.restoreLinkedGrid();
-//		lg.display();
-//		System.out.println("restore1");
-//		lg.restoreLinkedGrid();
-//		lg.display();
+		lg.display();
+
+		lg.diagnose();
 	}
 
 }
