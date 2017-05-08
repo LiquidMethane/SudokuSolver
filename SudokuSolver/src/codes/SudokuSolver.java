@@ -32,16 +32,29 @@ public class SudokuSolver {
 				lg.uniSol();
 			for (int i = 1; i < 10; i++)
 				lg.recessUniSol(i);
-			for (int i = 1; i < 10; i++)
-				lg.elimination(i);
+			for (int i = 1; i < 10; i++) {
+				lg.eliminationHoriz(i);
+				lg.eliminationVert(i);
+			}
+//			lg.display();
+//			lg.displayPoss();
+				
 //			lg.diagnose();
-			
+			lg.elimination();
 		}
-//		lg.elimination();
+		
+
+		
+//		lg.setFalseHoriz(lg.getRoot(), 1);
+//		lg.setFalseVert(lg.getRoot(), 1);
+//		lg.setFalseBox(lg.getRoot(), 1);
+		
 		
 		lg.display();
 
-		lg.diagnose();
+//		lg.diagnose();
+//		lg.displayPoss();
+		
 	}
 
 }

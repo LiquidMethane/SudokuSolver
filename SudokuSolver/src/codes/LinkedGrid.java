@@ -174,6 +174,38 @@ public class LinkedGrid {
 		System.out.println();
 	}
 
+	public void displayPoss() {
+
+		Node rm = root;
+		Node newNode = null;
+		for (int i = 0; i < 9; i++) {
+			newNode = rm;
+			for (int j = 0; j < 9; j++) {
+				newNode.displayPoss();
+				System.out.print("\t");
+				newNode = newNode.getRight();
+			}
+			System.out.println("\n\n");
+			rm = rm.getDown();
+		}
+
+	}
+	
+	public void displayCM()
+	{
+		Node rm = root;
+		Node newNode = null;
+		for (int i = 0; i < 9; i++) {
+			newNode = rm;
+			for (int j = 0; j < 9; j++) {
+				System.out.print(newNode.isCheckmark() + "\t");
+				newNode = newNode.getRight();
+			}
+			System.out.println("\n\n");
+			rm = rm.getDown();
+		}
+	}
+	
 	public void diagnose() {
 		display();
 		Node temp = root;
@@ -471,7 +503,8 @@ public class LinkedGrid {
 		for (int x = 0; x < 3; x++) {
 			temp = rm;
 			for (int y = 0; y < 3; y++) {
-				temp.setPossibilityFalse(i);
+				if (!temp.isCheckmark())
+					temp.setPossibilityFalse(i);
 				temp = temp.getRight();
 			}
 			rm = rm.getDown();
@@ -491,33 +524,45 @@ public class LinkedGrid {
 		}
 	}
 
-	public void elimination(int i) {
+	public void eliminationHoriz(int i) {
 
 		// the first algorithm
 		int count = 0;
 		for (int x = 1; x < 10; x++) {
-			Node bm = box[x];
+			Node rm = box[x];
 			Node newNode = null;
-			count = 0;
+//			Node temp = null;
 			for (int a = 0; a < 3; a++) {
-				newNode = bm;
+				count = 0;
+				newNode = rm;
 				for (int b = 0; b < 3; b++) {
 					if (newNode.getPossibility(i) && newNode.getSolution() == 0) {
 						count++;
 						newNode.setCheckmark(true);
+//						temp = newNode;
 					}
 					newNode = newNode.getRight();
 				}
 				if (count == 2 || count == 3) {
 					if (checkBoxHoriz(x, i)) {
-						setFalseHoriz(bm, i);
+						setFalseHoriz(rm, i);
+//						setFalseBox(box[x], i);
 					}
 				}
-				bm = bm.getDown();
+				rm = rm.getDown();
 				setCheckMarkFalse();
 			}
 
+		}
+
+	}
+
+	public void eliminationVert(int i) {
+		int count = 0;
+		for (int x = 1; x < 10; x++) {
 			Node cm = box[x];
+			Node newNode = null;
+//			Node temp = null;
 			for (int c = 0; c < 3; c++) {
 				newNode = cm;
 				count = 0;
@@ -525,23 +570,33 @@ public class LinkedGrid {
 					if (newNode.getPossibility(i) && newNode.getSolution() == 0) {
 						count++;
 						newNode.setCheckmark(true);
+//						temp = newNode;
 					}
 					newNode = newNode.getDown();
 				}
 				if (count == 2 || count == 3) {
 					if (checkBoxVert(x, i)) {
 						setFalseVert(cm, i);
+//						setFalseBox(box[x], i);
 					}
 				}
 				cm = cm.getRight();
 				setCheckMarkFalse();
 			}
 		}
-
 	}
 
-	public int[] PosArr(Node newNode) {
-		int arr[] = new int[2];
+	public int possibilityCount(Node newNode) {
+		int count = 0;
+		for (int x = 1; x < 10; x++) {
+			if (newNode.getPossibility(x))
+				count++;
+		}
+		return count;
+	}
+
+	public int[] possibilityNum(Node newNode) {
+		int[] arr = new int[2];
 		int count = 0;
 		for (int x = 1; x < 10; x++) {
 			if (newNode.getPossibility(x))
@@ -550,53 +605,96 @@ public class LinkedGrid {
 		return arr;
 	}
 
-	public void elimination() {// of course not working
-		// Node rm = root;
-		// int count = 0;
-		// Node newNode = null;
-		// Node temp = null;
-		// boolean pair = true;
-		// int PosArr[][] = new int[2][2];
-		// while (rm != null) {
-		// newNode = rm;
-		// count = 0;
-		// while (newNode != null) {
-		// count = 0;
-		// for (int i = 1; i < 10; i++)
-		// if (newNode.getPossibility(i))
-		// count++;
-		// if (count == 2) {
-		// count = 0;
-		// PosArr[0] = PosArr(newNode);
-		// temp = rm;
-		// while (temp != null) {
-		// count = 0;
-		// for (int a = 1; a < 10; a++)
-		// if (temp.getPossibility(a))
-		// count++;
-		// if (count == 2) {
-		// PosArr[1] = PosArr(temp);
-		// }
-		// for (int q = 0; q < 2; q++)
-		// if (PosArr[0][q] != PosArr[1][q])
-		// pair = false;
-		// if (pair = true) {
-		// for (int i = 0; i < 2; i++)
-		// setFalseHoriz(rm, PosArr[0][i]);
-		// if (newNode.getBoxID() == temp.getBoxID()) {
-		// for (int b = 0; b < 2; b++) {
-		// setFalseBox(newNode, b);
-		// newNode.setPossibilityTrue(b);
-		// temp.setPossibilityTrue(b);
-		// }
-		// }
-		// }
-		// }
-		// }
-		// newNode = newNode.getRight();
-		// }
-		// rm = rm.getDown();
-		// }
+	public boolean identicalPair(Node newNode1, Node newNode2) {
+		for (int x = 1; x < 10; x++) {
+			if (newNode1.getPossibility(x) != newNode2.getPossibility(x))
+				return false;
+		}
+		return true;
+	}
+
+	public void elimination() {
+		Node rm = root;
+		Node newNode = null;
+		Node temp = null;
+		int[] poss = new int[2];
+		while (rm != null) {
+			newNode = rm;
+			while (newNode != null) {
+				if (possibilityCount(newNode) == 2 && newNode.getSolution() == 0) {
+					newNode.setCheckmark(true);
+//					System.out.println("newNode: " + newNode.getRowID() + "\t" + newNode.getColumnID());
+//					displayCM();
+//					new Scanner(System.in).next();
+					temp = newNode;
+					while (temp != null) {
+						if (!temp.isCheckmark())
+							if (possibilityCount(temp) == 2 && temp.getSolution() == 0) {
+								if (identicalPair(newNode, temp)) {
+									temp.setCheckmark(true);
+//									System.out.println("temp   : " + temp.getRowID() + "\t" + temp.getColumnID());
+//									displayCM();
+//									new Scanner(System.in).next();
+									poss = possibilityNum(temp);
+									for (int x = 0; x < 2; x++) {
+										setFalseHoriz(rm, poss[x]);
+//										displayPoss();
+									}
+									if (newNode.getBoxID() == temp.getBoxID())
+										for (int x = 0; x < 2; x++) {
+											setFalseBox(box[temp.getBoxID()], poss[x]);
+//											System.out.println(poss[x]);
+										}
+								}
+							}
+						temp = temp.getRight();
+					}
+				}
+				newNode = newNode.getRight();
+				setCheckMarkFalse();
+			}
+			rm = rm.getDown();
+		}
+
+		Node cm = root;
+		newNode = null;
+		temp = null;
+		while (cm != null) {
+			newNode = cm;
+			while (newNode != null) {
+				if (possibilityCount(newNode) == 2 && newNode.getSolution() == 0) {
+					newNode.setCheckmark(true);
+//					System.out.println("newNode: " + newNode.getRowID() + "\t" + newNode.getColumnID());
+//					displayCM();
+//					new Scanner(System.in).next();
+					temp = newNode;
+					while (temp != null) {
+						if (!temp.isCheckmark())
+							if (possibilityCount(temp) == 2 && temp.getSolution() == 0) {
+								if (identicalPair(newNode, temp)) {
+									temp.setCheckmark(true);
+//									System.out.println("temp   : " + temp.getRowID() + "\t" + temp.getColumnID());
+//									displayCM();
+//									new Scanner(System.in).next();
+									poss = possibilityNum(temp);
+									for (int x = 0; x < 2; x++) {
+										setFalseVert(cm, poss[x]);
+//										displayPoss();
+									}
+									if (newNode.getBoxID() == temp.getBoxID())
+										for (int x = 0; x < 2; x++) {
+											setFalseBox(box[temp.getBoxID()], poss[x]);
+										}
+								}
+							}
+						temp = temp.getDown();
+					}
+				}
+				setCheckMarkFalse();
+				newNode = newNode.getDown();
+			}
+			cm = cm.getRight();
+		}
 	}
 
 }

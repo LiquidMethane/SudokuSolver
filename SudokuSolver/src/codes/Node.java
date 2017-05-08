@@ -23,6 +23,14 @@ public class Node {
 		left = null;
 		right = null;
 	}
+	
+	public void displayPoss() {
+		for (int x = 1; x < 10; x++) 
+			if (possible[x])
+				System.out.print(x + " ");
+			else 
+				System.out.print(0 + " ");
+	}
 
 	public void displayEverything() {
 		System.out.println("Solution:" + solution);
