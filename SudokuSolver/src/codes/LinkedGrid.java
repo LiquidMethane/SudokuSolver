@@ -22,11 +22,9 @@ public class LinkedGrid {
 
 	public LinkedGrid(int size) throws IOException {
 		int count = 1;
-		// Creating the first node
 		this.dimension = size;
 		root = new Node(0);
 		Node marker = root;
-		// Creating the first row
 		for (int x = 0; x < dimension - 1; x++) {
 			Node temp = new Node(0);
 			marker.setRight(temp);
@@ -49,8 +47,6 @@ public class LinkedGrid {
 			rm = rm.getDown();
 		}
 
-		// At this point the whole grid is created
-		// We will go through and set BoxID's
 
 		Node newNode = root;
 		rm = root;
@@ -65,7 +61,6 @@ public class LinkedGrid {
 			rm = rm.getDown();
 			newNode = rm;
 		}
-		// Populating the Grid from a file
 
 		box[1] = root;
 		box[2] = box[1].getRight().getRight().getRight();
@@ -122,7 +117,6 @@ public class LinkedGrid {
 			temp = temp.getRight();
 		}
 
-		// Setting all Boxes with the same BoxId to be false
 		int currentBoxID = currentNode.getBoxID();
 		temp = root;
 		Node rowMarker = root;
@@ -139,6 +133,7 @@ public class LinkedGrid {
 	}
 
 	public void display() {
+//		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 		int a[][] = new int[9][9];
 		Node rm = root;
 		int x = 0, y = 0;
@@ -157,7 +152,10 @@ public class LinkedGrid {
 		for (int i = 0; i < 9; i++) {
 			System.out.print("  ");
 			for (int j = 0; j < 9; j++) {
-				System.out.print(a[i][j]);
+				if (a[i][j] != 0)
+					System.out.print(a[i][j]);
+				if (a[i][j] == 0)
+					System.out.print(" ");
 				if ((j + 1) % 3 == 0 && j != 8) {
 					System.out.print("  |  ");
 				} else {
@@ -171,7 +169,30 @@ public class LinkedGrid {
 			else
 				System.out.print("\n\n");
 		}
-		System.out.println();
+	}
+
+	public void display2() {
+		int a[][] = new int[9][9];
+		Node rm = root;
+		int x = 0, y = 0;
+		while (rm != null) {
+			Node newNode = rm;
+			while (newNode != null) {
+				a[x][y] = newNode.getSolution();
+				newNode = newNode.getRight();
+				y++;
+			}
+			y = 0;
+			rm = rm.getDown();
+			x++;
+		}
+
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				System.out.print(a[i][j] + " ");
+			}
+			System.out.println();
+		}
 	}
 
 	public void displayPoss() {
@@ -190,9 +211,8 @@ public class LinkedGrid {
 		}
 
 	}
-	
-	public void displayCM()
-	{
+
+	public void displayCM() {
 		Node rm = root;
 		Node newNode = null;
 		for (int i = 0; i < 9; i++) {
@@ -205,7 +225,7 @@ public class LinkedGrid {
 			rm = rm.getDown();
 		}
 	}
-	
+
 	public void diagnose() {
 		display();
 		Node temp = root;
@@ -252,16 +272,33 @@ public class LinkedGrid {
 		}
 		return grid;
 	}
+	
+	public void store() {
+		ll.push(toIntArray());
+	}
 
-	public void restoreLinkedGrid() {
-		int grid[][] = ll.last.getGrid();
-		ll.pop();
+	public void backtrack() {
 		Node rm = root;
+		Node newNode = null;
+		int grid[][] = ll.getLast().getGrid();
+		while (rm != null) {
+			newNode = rm;
+			while (newNode != null) {
+				newNode.setSolution(0);
+				newNode.setPossibilityTrue();
+				newNode = newNode.getRight();
+			}
+			rm = rm.getDown();
+		}
+		
+		ll.pop();
+		rm = root;
 		int x = 0, y = 0;
 		while (rm != null) {
-			Node newNode = rm;
+			newNode = rm;
 			while (newNode != null) {
-				solve(newNode, grid[x][y]);
+				if (grid[x][y] != 0)
+					solve(newNode, grid[x][y]);
 				newNode = newNode.getRight();
 				y++;
 			}
@@ -271,11 +308,7 @@ public class LinkedGrid {
 		}
 	}
 
-	public void storeLinkedGrid() {
-		ll.push(toIntArray());
-	}
-
-	public boolean isComplete() {
+	public boolean complete() {
 		Node rm = root;
 		Node newNode;
 		while (rm != null) {
@@ -287,20 +320,23 @@ public class LinkedGrid {
 			}
 			rm = rm.getDown();
 		}
-		return false;
+		return true;
 	}
 
-	public boolean isPossible() {
+	public boolean possible() {
 		Node rm = root;
 		Node newNode;
-		while (rm != null) {
+		for (int i = 0; i < 9; i++) {
 			newNode = rm;
-			while (newNode != null) {
-				if (newNode.getSolution() == 0)
+			for (int j = 0; j < 9; j++) {
+				if (newNode.getSolution() == 0) {
 					for (int x = 1; x < 10; x++) {
-						if (newNode.getPossibility(x))
+						if (newNode.getPossibility(x)) {
 							return true;
+						}
 					}
+					return false;
+				}
 				newNode = newNode.getRight();
 			}
 			rm = rm.getDown();
@@ -321,29 +357,6 @@ public class LinkedGrid {
 			rm = rm.getDown();
 		}
 		return root;
-	}
-
-	public boolean hasUniSol() {// kinda useless
-		int count = 0;
-		Node rm = root;
-		Node newNode;
-		while (rm != null) {
-			newNode = rm;
-			while (newNode != null) {
-				if (newNode.getSolution() == 0) {
-					count = 0;
-					for (int x = 1; x < 10; x++)
-						if (newNode.getPossibility(x))
-							count++;
-
-					if (count == 1)
-						return true;
-				}
-				newNode = newNode.getRight();
-			}
-			rm = rm.getDown();
-		}
-		return false;
 	}
 
 	public void uniSol() {
@@ -526,12 +539,10 @@ public class LinkedGrid {
 
 	public void eliminationHoriz(int i) {
 
-		// the first algorithm
 		int count = 0;
 		for (int x = 1; x < 10; x++) {
 			Node rm = box[x];
 			Node newNode = null;
-//			Node temp = null;
 			for (int a = 0; a < 3; a++) {
 				count = 0;
 				newNode = rm;
@@ -539,14 +550,12 @@ public class LinkedGrid {
 					if (newNode.getPossibility(i) && newNode.getSolution() == 0) {
 						count++;
 						newNode.setCheckmark(true);
-//						temp = newNode;
 					}
 					newNode = newNode.getRight();
 				}
 				if (count == 2 || count == 3) {
 					if (checkBoxHoriz(x, i)) {
 						setFalseHoriz(rm, i);
-//						setFalseBox(box[x], i);
 					}
 				}
 				rm = rm.getDown();
@@ -562,7 +571,6 @@ public class LinkedGrid {
 		for (int x = 1; x < 10; x++) {
 			Node cm = box[x];
 			Node newNode = null;
-//			Node temp = null;
 			for (int c = 0; c < 3; c++) {
 				newNode = cm;
 				count = 0;
@@ -570,14 +578,12 @@ public class LinkedGrid {
 					if (newNode.getPossibility(i) && newNode.getSolution() == 0) {
 						count++;
 						newNode.setCheckmark(true);
-//						temp = newNode;
 					}
 					newNode = newNode.getDown();
 				}
 				if (count == 2 || count == 3) {
 					if (checkBoxVert(x, i)) {
 						setFalseVert(cm, i);
-//						setFalseBox(box[x], i);
 					}
 				}
 				cm = cm.getRight();
@@ -623,27 +629,19 @@ public class LinkedGrid {
 			while (newNode != null) {
 				if (possibilityCount(newNode) == 2 && newNode.getSolution() == 0) {
 					newNode.setCheckmark(true);
-//					System.out.println("newNode: " + newNode.getRowID() + "\t" + newNode.getColumnID());
-//					displayCM();
-//					new Scanner(System.in).next();
 					temp = newNode;
 					while (temp != null) {
 						if (!temp.isCheckmark())
 							if (possibilityCount(temp) == 2 && temp.getSolution() == 0) {
 								if (identicalPair(newNode, temp)) {
 									temp.setCheckmark(true);
-//									System.out.println("temp   : " + temp.getRowID() + "\t" + temp.getColumnID());
-//									displayCM();
-//									new Scanner(System.in).next();
 									poss = possibilityNum(temp);
 									for (int x = 0; x < 2; x++) {
 										setFalseHoriz(rm, poss[x]);
-//										displayPoss();
 									}
 									if (newNode.getBoxID() == temp.getBoxID())
 										for (int x = 0; x < 2; x++) {
 											setFalseBox(box[temp.getBoxID()], poss[x]);
-//											System.out.println(poss[x]);
 										}
 								}
 							}
@@ -664,22 +662,15 @@ public class LinkedGrid {
 			while (newNode != null) {
 				if (possibilityCount(newNode) == 2 && newNode.getSolution() == 0) {
 					newNode.setCheckmark(true);
-//					System.out.println("newNode: " + newNode.getRowID() + "\t" + newNode.getColumnID());
-//					displayCM();
-//					new Scanner(System.in).next();
 					temp = newNode;
 					while (temp != null) {
 						if (!temp.isCheckmark())
 							if (possibilityCount(temp) == 2 && temp.getSolution() == 0) {
 								if (identicalPair(newNode, temp)) {
 									temp.setCheckmark(true);
-//									System.out.println("temp   : " + temp.getRowID() + "\t" + temp.getColumnID());
-//									displayCM();
-//									new Scanner(System.in).next();
 									poss = possibilityNum(temp);
 									for (int x = 0; x < 2; x++) {
 										setFalseVert(cm, poss[x]);
-//										displayPoss();
 									}
 									if (newNode.getBoxID() == temp.getBoxID())
 										for (int x = 0; x < 2; x++) {
@@ -694,6 +685,33 @@ public class LinkedGrid {
 				newNode = newNode.getDown();
 			}
 			cm = cm.getRight();
+		}
+	}
+
+	public void guess(Node newNode) {
+		if (newNode.getSolution() == 0) {
+			for (int i = 1; i < 10; i++) {
+				if (newNode.getPossibility(i)) {
+					store();
+					solve(newNode, i);
+//					display();
+					if (newNode.getRight() != null)
+						guess(newNode.getRight());
+					else if (newNode.getDown() != null)
+						guess(newNode.getLeft().getLeft().getLeft().getLeft().getLeft().getLeft().getLeft().getLeft()
+								.getDown());
+				}
+			}
+			if (!complete())
+				backtrack();
+			else 
+				return;
+		} else {
+			if (newNode.getRight() != null)
+				guess(newNode.getRight());
+			else if (newNode.getDown() != null)
+				guess(newNode.getLeft().getLeft().getLeft().getLeft().getLeft().getLeft().getLeft().getLeft()
+						.getDown());
 		}
 	}
 

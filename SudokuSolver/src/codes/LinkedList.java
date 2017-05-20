@@ -2,8 +2,9 @@ package codes;
 
 public class LinkedList {
 
-	SolNode first;
-	SolNode last;
+	private SolNode first;
+	private SolNode last;
+	private int count;
 	
 	public SolNode getFirst() {
 		return first;
@@ -21,9 +22,17 @@ public class LinkedList {
 	public LinkedList() {
 		first = null;
 		last = null;
+		count = 0;
 	}
 	
+	public int getCount() {
+		return count;
+	}
+	public void setCount(int count) {
+		this.count = count;
+	}
 	public void push(int grid[][]) {
+		count++;
 		SolNode newNode = new SolNode(grid);
 		if (first == null)
 			first = newNode;
@@ -39,9 +48,11 @@ public class LinkedList {
 		} else if (last == first) {
 			first = null;
 			last = null;
+			count--;
 		} else {
 			last = last.getPrev();
 			last.setNext(null);
+			count--;
 		}
 	}
 	

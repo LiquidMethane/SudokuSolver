@@ -27,9 +27,9 @@ public class Node {
 	public void displayPoss() {
 		for (int x = 1; x < 10; x++) 
 			if (possible[x])
-				System.out.print(x + " ");
+				System.out.print(x);
 			else 
-				System.out.print(0 + " ");
+				System.out.print(0);
 	}
 
 	public void displayEverything() {
@@ -82,6 +82,11 @@ public class Node {
 	
 	public void setPossibilityTrue(int number) {
 		possible[number] = true;
+	}
+	
+	public void setPossibilityTrue() {
+		for (int x = 1; x < 10; x++) 
+			possible[x] = true;
 	}
 	
 	public boolean getPossibility(int number) {

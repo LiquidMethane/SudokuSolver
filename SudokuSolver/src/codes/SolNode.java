@@ -3,6 +3,7 @@ package codes;
 public class SolNode {
 	
 	private int grid[][];
+
 	private SolNode prev;
 	private SolNode next;
 	
@@ -16,7 +17,7 @@ public class SolNode {
 		prev = null;
 		next = null;
 	}
-	
+
 	public int[][] getGrid() {
 		return grid;
 	}
